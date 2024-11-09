@@ -1,5 +1,6 @@
 import logging
-from fastapi import FastAPI, File, UploadFile, Form, Depends
+from fastapi import FastAPI, File, UploadFile, Form, Depends, HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from . import crud, models, schemas, utils
@@ -161,3 +162,23 @@ async def create_legality(
             "message": "Failed to create legality",
             "error": str(e)
         }
+
+# Get ALL fetch all legality records
+@app.get("/List_legality/", response_model=schemas.LegalityListResponse)
+async def get_legality_list(db: Session = Depends(get_db)):
+    try:
+        # Query the database to get all legality records
+        legality_records = db.query(models.Legality).all()
+
+        if not legality_records:
+            raise HTTPException(
+                status_code=404, detail="No legality records found")
+
+        # Convert the ORM models to Pydantic models
+        legality_response = [schemas.LegalityResponse.from_orm( record) for record in legality_records]
+
+        return {"legality": legality_response}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}"
+        )

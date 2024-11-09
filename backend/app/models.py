@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, Text, JSON
 from .database import Base
 
-
 class Legality(Base):
     __tablename__ = "legality"
 

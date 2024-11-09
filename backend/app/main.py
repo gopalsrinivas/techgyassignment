@@ -6,6 +6,7 @@ from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
 from fastapi.staticfiles import StaticFiles
 import os
+from pathlib import Path
 
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -13,11 +14,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+
 @app.on_event("startup")
 def on_startup():
     models.Base.metadata.create_all(bind=engine)
-
-
 
 # Dependency to get the database session
 
@@ -61,84 +61,103 @@ async def create_legality(
     legal_opinion_report_file: List[UploadFile] = File(...),
     legal_opinion_comment: Optional[str] = Form(None),
     land_coordinates_file: List[UploadFile] = File(...),
-    land_coordinates_comment: Optional[str] = Form(None),
+    land_coordinates_comment_file: Optional[str] = Form(None),
     owner_kyc_video_file: List[UploadFile] = File(...),
     owner_kyc_video_comment: Optional[str] = Form(None),
     db: Session = Depends(get_db)
 ):
     try:
-        # Log the start of the request processing
         logger.info("Started processing create_legality request")
 
-        # Save files and get file paths for each field
-        land_documents_paths = utils.save_files(
-            land_documents_file, "land_documents")
-        pattadhar_passbook_paths = utils.save_files(
-            pattadhar_passbook_file, "pattadhar_passbook")
-        link_documents_paths = utils.save_files(
-            link_documents_file, "link_documents")
-        kasara_pahani_paths = utils.save_files(
-            kasara_pahani_file, "kasara_pahani")
-        encumbrance_certificate_paths = utils.save_files(
-            encumbrance_certificate_file, "encumbrance_certificate")
-        revenue_record_paths = utils.save_files(
-            revenue_record_file, "revenue_record")
-        partition_deed_paths = utils.save_files(
-            partition_deed_file, "partition_deed")
-        faisal_patti_paths = utils.save_files(
-            faisal_patti_file, "faisal_patti")
-        death_certificate_paths = utils.save_files(
-            death_certificate_file, "death_certificate")
-        lease_agreement_paths = utils.save_files(
-            lease_agreement_file, "lease_agreement")
-        legal_opinion_report_paths = utils.save_files(
-            legal_opinion_report_file, "legal_opinion_report")
-        land_coordinates_paths = utils.save_files(
-            land_coordinates_file, "land_coordinates")
-        owner_kyc_video_paths = utils.save_files(
-            owner_kyc_video_file, "owner_kyc_video")
+        # Save files and get filenames
+        land_documents_filenames = utils.save_files(land_documents_file, "land_documents")
+        pattadhar_passbook_filenames = utils.save_files(pattadhar_passbook_file, "pattadhar_passbook")
+        link_documents_filenames = utils.save_files(link_documents_file, "link_documents")
+        kasara_pahani_filenames = utils.save_files(kasara_pahani_file, "kasara_pahani")
+        encumbrance_certificate_filenames = utils.save_files(encumbrance_certificate_file, "encumbrance_certificate")
+        revenue_record_filenames = utils.save_files(revenue_record_file, "revenue_record")
+        partition_deed_filenames = utils.save_files(partition_deed_file, "partition_deed")
+        faisal_patti_filenames = utils.save_files(faisal_patti_file, "faisal_patti")
+        death_certificate_filenames = utils.save_files(death_certificate_file, "death_certificate")
+        lease_agreement_filenames = utils.save_files(lease_agreement_file, "lease_agreement")
+        legal_opinion_report_filenames = utils.save_files(legal_opinion_report_file, "legal_opinion_report")
+        land_coordinates_filenames = utils.save_files(land_coordinates_file, "land_coordinates")
+        owner_kyc_video_filenames = utils.save_files(owner_kyc_video_file, "owner_kyc_video")
 
-        # Prepare data to be inserted into the database
+        # Prepare data for database insertion
         legality_data = schemas.LegalityCreate(
-            land_documents_file=land_documents_paths,
+            land_documents_file=land_documents_filenames,
             land_documents_comment=land_documents_comment,
-            pattadhar_passbook_file=pattadhar_passbook_paths,
+            pattadhar_passbook_file=pattadhar_passbook_filenames,
             pattadhar_passbook_comment=pattadhar_passbook_comment,
-            link_documents_file=link_documents_paths,
+            link_documents_file=link_documents_filenames,
             link_documents_comment=link_documents_comment,
-            kasara_pahani_file=kasara_pahani_paths,
+            kasara_pahani_file=kasara_pahani_filenames,
             kasara_pahani_comment=kasara_pahani_comment,
-            encumbrance_certificate_file=encumbrance_certificate_paths,
+            encumbrance_certificate_file=encumbrance_certificate_filenames,
             encumbrance_comment=encumbrance_comment,
-            revenue_record_file=revenue_record_paths,
+            revenue_record_file=revenue_record_filenames,
             revenue_record_comment=revenue_record_comment,
-            partition_deed_file=partition_deed_paths,
+            partition_deed_file=partition_deed_filenames,
             partition_comment=partition_comment,
-            faisal_patti_file=faisal_patti_paths,
+            faisal_patti_file=faisal_patti_filenames,
             faisal_patti_comment=faisal_patti_comment,
-            death_certificate_file=death_certificate_paths,
+            death_certificate_file=death_certificate_filenames,
             death_certificate_comment=death_certificate_comment,
-            lease_agreement_file=lease_agreement_paths,
+            lease_agreement_file=lease_agreement_filenames,
             lease_agreement_comment=lease_agreement_comment,
-            legal_opinion_report_file=legal_opinion_report_paths,
+            legal_opinion_report_file=legal_opinion_report_filenames,
             legal_opinion_comment=legal_opinion_comment,
-            land_coordinates_file=land_coordinates_paths,
-            land_coordinates_comment=land_coordinates_comment,
-            owner_kyc_video_file=owner_kyc_video_paths,
+            land_coordinates_file=land_coordinates_filenames,
+            land_coordinates_comment_file=land_coordinates_comment_file,
+            owner_kyc_video_file=owner_kyc_video_filenames,
             owner_kyc_video_comment=owner_kyc_video_comment,
         )
 
-        # Log the prepared data
         logger.info("Prepared legality data for database insertion")
-
-        # Insert the data into the database
         result = crud.create_legality(db=db, legality=legality_data)
-
-        # Log the success
         logger.info(f"Legality record created with ID {result.id}")
 
-        return result
+        # Prepare the response data with success code, message, and response data
+        response_data = {
+            "status_code": 201,
+            "message": "Legality created successfully",
+            "data": {
+                "id": result.id,
+                "land_documents_file": result.land_documents_file,
+                "land_documents_comment": result.land_documents_comment,
+                "pattadhar_passbook_file": result.pattadhar_passbook_file,
+                "pattadhar_passbook_comment": result.pattadhar_passbook_comment,
+                "link_documents_file": result.link_documents_file,
+                "link_documents_comment": result.link_documents_comment,
+                "kasara_pahani_file": result.kasara_pahani_file,
+                "kasara_pahani_comment": result.kasara_pahani_comment,
+                "encumbrance_certificate_file": result.encumbrance_certificate_file,
+                "encumbrance_comment": result.encumbrance_comment,
+                "revenue_record_file": result.revenue_record_file,
+                "revenue_record_comment": result.revenue_record_comment,
+                "partition_deed_file": result.partition_deed_file,
+                "partition_comment": result.partition_comment,
+                "faisal_patti_file": result.faisal_patti_file,
+                "faisal_patti_comment": result.faisal_patti_comment,
+                "death_certificate_file": result.death_certificate_file,
+                "death_certificate_comment": result.death_certificate_comment,
+                "lease_agreement_file": result.lease_agreement_file,
+                "lease_agreement_comment": result.lease_agreement_comment,
+                "legal_opinion_report_file": result.legal_opinion_report_file,
+                "legal_opinion_comment": result.legal_opinion_comment,
+                "land_coordinates_file": result.land_coordinates_file,
+                "land_coordinates_comment": result.land_coordinates_comment_file,
+                "owner_kyc_video_file": result.owner_kyc_video_file,
+                "owner_kyc_video_comment": result.owner_kyc_video_comment,
+            }
+        }
+
+        return response_data
     except Exception as e:
-        # Log any error that occurs
         logger.error(f"Error processing create_legality request: {e}")
-        raise e
+        return {
+            "status_code": 500,
+            "message": "Failed to create legality",
+            "error": str(e)
+        }

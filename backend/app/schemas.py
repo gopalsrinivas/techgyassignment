@@ -71,3 +71,24 @@ class LegalityListResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class FamilyTreeCreate(BaseModel):
+    father_name: str
+    father_age: int
+    mother_name: str
+    mother_age: int
+    owner_name: str
+    owner_age: int
+    religion: str
+    num_wifes: int
+    num_kids: int
+    num_siblings: int
+
+class FamilyTreeResponse(FamilyTreeCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class FamilyTreeListResponse(BaseModel):
+    family_tree: List[FamilyTreeResponse]

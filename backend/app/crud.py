@@ -1,10 +1,17 @@
+# app/crud.py
 from sqlalchemy.orm import Session
-from .models import Legality
-from .schemas import LegalityCreate
+from . import models, schemas  # Import models and schemas
+from .schemas import LegalityCreate, FamilyTreeCreate
+from fastapi import HTTPException
+import logging
 
+# Set up logging configuration
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def create_legality(db: Session, legality: LegalityCreate):
-    db_legality = Legality(
+# Function to create a Legality record
+def create_legality(db: Session, legality: schemas.LegalityCreate):
+    db_legality = models.Legality(
         land_documents_file=legality.land_documents_file,
         land_documents_comment=legality.land_documents_comment,
         pattadhar_passbook_file=legality.pattadhar_passbook_file,
@@ -36,3 +43,27 @@ def create_legality(db: Session, legality: LegalityCreate):
     db.commit()
     db.refresh(db_legality)
     return db_legality
+
+# Function to create a FamilyTree record
+def create_family_tree(db: Session, family_tree: schemas.FamilyTreeCreate):
+    try:
+        db_family_tree = models.FamilyTree(**family_tree.dict())
+        db.add(db_family_tree)
+        db.commit()
+        db.refresh(db_family_tree)
+        logger.info(f"FamilyTree created successfully with ID: {db_family_tree.id}")
+        return db_family_tree
+    except Exception as e:
+        logger.error(f"Error creating FamilyTree record: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while creating the FamilyTree record")
+
+# Function to get all FamilyTree records
+def get_family_tree(db: Session, skip: int = 0, limit: int = 100):
+    try:
+        family_tree_records = db.query(models.FamilyTree).offset(skip).limit(limit).all()
+        logger.info(f"Retrieved {len(family_tree_records)} FamilyTree records")
+        return family_tree_records
+    except Exception as e:
+        logger.error(f"Error retrieving FamilyTree records: {e}")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while fetching FamilyTree records")

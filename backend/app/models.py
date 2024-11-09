@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, JSON
+from sqlalchemy import Column, Integer, Text, JSON, String
 from .database import Base
 
 class Legality(Base):
@@ -31,3 +31,19 @@ class Legality(Base):
     land_coordinates_comment_file = Column(Text)
     owner_kyc_video_file = Column(JSON)
     owner_kyc_video_comment = Column(Text)
+
+
+class FamilyTree(Base):
+    __tablename__ = "family_tree"
+
+    id = Column(Integer, primary_key=True, index=True)
+    father_name = Column(String, index=True)
+    father_age = Column(Integer)
+    mother_name = Column(String, index=True)
+    mother_age = Column(Integer)
+    owner_name = Column(String, index=True)
+    owner_age = Column(Integer)
+    religion = Column(String)
+    num_wifes = Column(Integer)
+    num_kids = Column(Integer)
+    num_siblings = Column(Integer)

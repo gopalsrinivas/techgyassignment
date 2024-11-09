@@ -171,8 +171,7 @@ async def get_legality_list(db: Session = Depends(get_db)):
         legality_records = db.query(models.Legality).all()
 
         if not legality_records:
-            raise HTTPException(
-                status_code=404, detail="No legality records found")
+            raise HTTPException(status_code=404, detail="No legality records found")
 
         # Convert the ORM models to Pydantic models
         legality_response = [schemas.LegalityResponse.from_orm( record) for record in legality_records]
@@ -182,3 +181,64 @@ async def get_legality_list(db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}"
         )
+
+
+@app.post("/create-family-tree/", response_model=schemas.FamilyTreeResponse)
+async def create_family_tree_endpoint(family_tree: schemas.FamilyTreeCreate, db: Session = Depends(get_db)):
+    try:
+        # Creating the family tree in the database
+        db_family_tree = crud.create_family_tree(db=db, family_tree=family_tree)
+
+        response_data = schemas.FamilyTreeResponse(
+            id=db_family_tree.id,
+            father_name=db_family_tree.father_name,
+            father_age=db_family_tree.father_age,
+            mother_name=db_family_tree.mother_name,
+            mother_age=db_family_tree.mother_age,
+            owner_name=db_family_tree.owner_name,
+            owner_age=db_family_tree.owner_age,
+            religion=db_family_tree.religion,
+            num_wifes=db_family_tree.num_wifes,
+            num_kids=db_family_tree.num_kids,
+            num_siblings=db_family_tree.num_siblings,
+        )
+
+        logger.info(f"Family tree created with ID: {db_family_tree.id}")
+        return response_data
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error in create_family_tree endpoint: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while creating the FamilyTree")
+
+        
+# List endpoint to get FamilyTree records
+@app.get("/list-family-tree/", response_model=schemas.FamilyTreeListResponse)
+async def get_family_tree_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    try:
+        family_tree_records = crud.get_family_tree(db=db, skip=skip, limit=limit)
+
+        response_data = schemas.FamilyTreeListResponse(
+            family_tree=[schemas.FamilyTreeResponse(
+                id=db_family_tree.id,
+                father_name=db_family_tree.father_name,
+                father_age=db_family_tree.father_age,
+                mother_name=db_family_tree.mother_name,
+                mother_age=db_family_tree.mother_age,
+                owner_name=db_family_tree.owner_name,
+                owner_age=db_family_tree.owner_age,
+                religion=db_family_tree.religion,
+                num_wifes=db_family_tree.num_wifes,
+                num_kids=db_family_tree.num_kids,
+                num_siblings=db_family_tree.num_siblings
+            ) for db_family_tree in family_tree_records]
+        )
+
+        logger.info(f"Retrieved {len(family_tree_records)} FamilyTree records")
+        return response_data
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error in get_family_tree endpoint: {e}")
+        raise HTTPException(
+            status_code=500, detail="An error occurred while retrieving FamilyTree records")

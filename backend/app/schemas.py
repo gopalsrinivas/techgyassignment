@@ -32,7 +32,6 @@ class LegalityCreate(BaseModel):
     class Config:
         from_attributes = True
 
-
 class LegalityResponse(BaseModel):
     id: int
     land_documents_file: Optional[List[str]] = None
@@ -92,3 +91,165 @@ class FamilyTreeResponse(FamilyTreeCreate):
 
 class FamilyTreeListResponse(BaseModel):
     family_tree: List[FamilyTreeResponse]
+
+
+class LandBoundariesCreate(BaseModel):
+    land_images_file: Optional[List[str]] = None
+    land_images_comments: Optional[str] = None
+    landscape_view_of_farmland_file: Optional[List[str]] = None
+    slope_side: Optional[str] = None
+    slope_side_comments: Optional[str] = None
+    shape_of_land: Optional[str] = None
+    shape_of_land_comment: Optional[str] = None
+    water_and_electricity_facility: Optional[str] = None
+    water_facility: Optional[str] = None
+    electricity_facility: Optional[str] = None
+    water_and_electricity_facility_comments: Optional[str] = None
+    masterplan_file: Optional[List[str]] = None
+    masterplan_comments: Optional[str] = None
+    east_boundaries_select: Optional[str] = None
+    east_owner_name: Optional[str] = None
+    east_age: Optional[int] = None
+    east_boundaries_comments: Optional[str] = None
+    west_boundaries_select: Optional[str] = None
+    type_of_road: Optional[str] = None
+    width_of_road: Optional[float] = None
+    west_boundaries_comments: Optional[str] = None
+    north_boundaries_select: Optional[str] = None
+    tree_count: Optional[int] = None
+    north_boundaries_comments: Optional[str] = None
+    south_boundaries_select: Optional[str] = None
+    south_boundaries_comments: Optional[str] = None
+    survey_report: Optional[str] = None
+    private_survey_file: Optional[List[str]] = None
+    private_survey_number: Optional[str] = None
+    government_survey_file: Optional[List[str]] = None
+    survey_report_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class LandBoundariesResponse(BaseModel):
+    id: int
+    land_images_file: Optional[List[str]] = None
+    land_images_comments: Optional[str] = None
+    landscape_view_of_farmland_file: Optional[List[str]] = None
+    slope_side: Optional[str] = None
+    slope_side_comments: Optional[str] = None
+    shape_of_land: Optional[str] = None
+    shape_of_land_comment: Optional[str] = None
+    water_and_electricity_facility: Optional[str] = None
+    water_facility: Optional[str] = None
+    electricity_facility: Optional[str] = None
+    water_and_electricity_facility_comments: Optional[str] = None
+    masterplan_file: Optional[List[str]] = None
+    masterplan_comments: Optional[str] = None
+    east_boundaries_select: Optional[str] = None
+    east_owner_name: Optional[str] = None
+    east_age: Optional[int] = None
+    east_boundaries_comments: Optional[str] = None
+    west_boundaries_select: Optional[str] = None
+    type_of_road: Optional[str] = None
+    width_of_road: Optional[float] = None
+    west_boundaries_comments: Optional[str] = None
+    north_boundaries_select: Optional[str] = None
+    tree_count: Optional[int] = None
+    north_boundaries_comments: Optional[str] = None
+    south_boundaries_select: Optional[str] = None
+    south_boundaries_comments: Optional[str] = None
+    survey_report: Optional[str] = None
+    private_survey_file: Optional[List[str]] = None
+    private_survey_number: Optional[str] = None
+    government_survey_file: Optional[List[str]] = None
+    survey_report_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class LandBoundariesListResponse(BaseModel):
+    land_boundaries: List[LandBoundariesResponse]
+
+    class Config:
+        from_attributes = True
+class LandBoundariesCreate(BaseModel):
+    land_images_file: Optional[List[str]] = None
+    land_images_comments: Optional[str] = None
+    landscape_view_of_farmland_file: Optional[List[str]] = None
+    slope_side: Optional[str] = None
+    slope_side_comments: Optional[str] = None
+    shape_of_land: Optional[str] = None
+    shape_of_land_comment: Optional[str] = None
+    water_and_electricity_facility: Optional[str] = None
+    water_facility: Optional[str] = None
+    electricity_facility: Optional[str] = None
+    water_and_electricity_facility_comments: Optional[str] = None
+    masterplan_file: Optional[List[str]] = None
+    masterplan_comments: Optional[str] = None
+    east_boundaries_select: Optional[str] = None
+    east_owner_name: Optional[str] = None
+    east_age: Optional[int] = None
+    east_boundaries_comments: Optional[str] = None
+    west_boundaries_select: Optional[str] = None
+    type_of_road: Optional[str] = None
+    width_of_road: Optional[float] = None
+    west_boundaries_comments: Optional[str] = None
+    north_boundaries_select: Optional[str] = None
+    tree_count: Optional[int] = None
+    north_boundaries_comments: Optional[str] = None
+    south_boundaries_select: Optional[str] = None
+    south_boundaries_comments: Optional[str] = None
+    survey_report: Optional[str] = None
+    private_survey_file: Optional[List[str]] = None
+    private_survey_number: Optional[str] = None
+    government_survey_file: Optional[List[str]] = None
+    government_survey_number: Optional[str] = None
+    survey_report_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LandBoundariesResponse(BaseModel):
+    id: int
+    land_images_file: Optional[List[str]] = None
+    land_images_comments: Optional[str] = None
+    landscape_view_of_farmland_file: Optional[List[str]] = None
+    slope_side: Optional[str] = None
+    slope_side_comments: Optional[str] = None
+    shape_of_land: Optional[str] = None
+    shape_of_land_comment: Optional[str] = None
+    water_and_electricity_facility: Optional[str] = None
+    water_facility: Optional[str] = None
+    electricity_facility: Optional[str] = None
+    water_and_electricity_facility_comments: Optional[str] = None
+    masterplan_file: Optional[List[str]] = None
+    masterplan_comments: Optional[str] = None
+    east_boundaries_select: Optional[str] = None
+    east_owner_name: Optional[str] = None
+    east_age: Optional[int] = None
+    east_boundaries_comments: Optional[str] = None
+    west_boundaries_select: Optional[str] = None
+    type_of_road: Optional[str] = None
+    width_of_road: Optional[float] = None
+    west_boundaries_comments: Optional[str] = None
+    north_boundaries_select: Optional[str] = None
+    tree_count: Optional[int] = None
+    north_boundaries_comments: Optional[str] = None
+    south_boundaries_select: Optional[str] = None
+    south_boundaries_comments: Optional[str] = None
+    survey_report: Optional[str] = None
+    private_survey_file: Optional[List[str]] = None
+    private_survey_number: Optional[str] = None
+    government_survey_file: Optional[List[str]] = None
+    government_survey_number: Optional[str] = None
+    survey_report_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LandBoundariesListResponse(BaseModel):
+    land_boundaries: List[LandBoundariesResponse]
+
+    class Config:
+        from_attributes = True

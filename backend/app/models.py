@@ -47,3 +47,41 @@ class FamilyTree(Base):
     num_wifes = Column(Integer)
     num_kids = Column(Integer)
     num_siblings = Column(Integer)
+
+
+class LandBoundaries(Base):
+    __tablename__ = "land_boundaries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    land_images_file = Column(JSON)
+    land_images_comments = Column(Text)
+    landscape_view_of_farmland_file = Column(JSON)
+    slope_side = Column(String)  # e.g., "North", "South", etc.
+    slope_side_comments = Column(Text)
+    shape_of_land = Column(String)  # e.g., "Rectangular", "Square", etc.
+    shape_of_land_comment = Column(Text)   # e.g., "Water only", "Electricity only", etc.
+    water_and_electricity_facility = Column(String)
+    water_facility = Column(String)  # e.g., "Bore", "Municipal"
+    electricity_facility = Column(String)  # e.g., "3 Phase", "2 Phase"
+    water_and_electricity_facility_comments = Column(Text)
+    masterplan_file = Column(JSON)
+    masterplan_comments = Column(Text)
+    east_boundaries_select = Column(String)  # e.g., "Road", "House", etc.
+    east_owner_name = Column(String)
+    east_age = Column(Integer)
+    east_boundaries_comments = Column(Text)
+    west_boundaries_select = Column(String)
+    type_of_road = Column(String)
+    width_of_road = Column(String)  # assuming width is a float value
+    west_boundaries_comments = Column(Text)
+    north_boundaries_select = Column(String)
+    tree_count = Column(Integer)  # number of trees
+    north_boundaries_comments = Column(Text)
+    south_boundaries_select = Column(String)
+    south_boundaries_comments = Column(Text) 
+    survey_report = Column(String) # e.g., "Private Survey", "Government Survey"
+    private_survey_file = Column(JSON)
+    private_survey_number = Column(String)
+    government_survey_file = Column(JSON)
+    government_survey_number = Column(String)
+    survey_report_comments = Column(Text)

@@ -65,5 +65,45 @@ def get_family_tree(db: Session, skip: int = 0, limit: int = 100):
         return family_tree_records
     except Exception as e:
         logger.error(f"Error retrieving FamilyTree records: {e}")
-        raise HTTPException(
-            status_code=500, detail="An error occurred while fetching FamilyTree records")
+        raise HTTPException(status_code=500, detail="An error occurred while fetching FamilyTree records")
+
+
+def create_land_boundaries(db: Session, land_boundaries: schemas.LandBoundariesCreate):
+    db_land_boundaries = models.LandBoundaries(
+        land_images_file=land_boundaries.land_images_file,
+        land_images_comments=land_boundaries.land_images_comments,
+        landscape_view_of_farmland_file=land_boundaries.landscape_view_of_farmland_file,
+        slope_side=land_boundaries.slope_side,
+        slope_side_comments=land_boundaries.slope_side_comments,
+        shape_of_land=land_boundaries.shape_of_land,
+        shape_of_land_comment=land_boundaries.shape_of_land_comment,
+        water_and_electricity_facility=land_boundaries.water_and_electricity_facility,
+        water_facility=land_boundaries.water_facility,
+        electricity_facility=land_boundaries.electricity_facility,
+        water_and_electricity_facility_comments=land_boundaries.water_and_electricity_facility_comments,
+        masterplan_file=land_boundaries.masterplan_file,
+        masterplan_comments=land_boundaries.masterplan_comments,
+        east_boundaries_select=land_boundaries.east_boundaries_select,
+        east_owner_name=land_boundaries.east_owner_name,
+        east_age=land_boundaries.east_age,
+        east_boundaries_comments=land_boundaries.east_boundaries_comments,
+        west_boundaries_select=land_boundaries.west_boundaries_select,
+        type_of_road=land_boundaries.type_of_road,
+        width_of_road=land_boundaries.width_of_road,
+        west_boundaries_comments=land_boundaries.west_boundaries_comments,
+        north_boundaries_select=land_boundaries.north_boundaries_select,
+        tree_count=land_boundaries.tree_count,
+        north_boundaries_comments=land_boundaries.north_boundaries_comments,
+        south_boundaries_select=land_boundaries.south_boundaries_select,
+        south_boundaries_comments=land_boundaries.south_boundaries_comments,
+        survey_report=land_boundaries.survey_report,
+        private_survey_file=land_boundaries.private_survey_file,
+        private_survey_number=land_boundaries.private_survey_number,
+        government_survey_file=land_boundaries.government_survey_file,
+        government_survey_number=land_boundaries.government_survey_number,
+        survey_report_comments=land_boundaries.survey_report_comments,
+    )
+    db.add(db_land_boundaries)
+    db.commit()
+    db.refresh(db_land_boundaries)
+    return db_land_boundaries

@@ -178,9 +178,7 @@ async def get_legality_list(db: Session = Depends(get_db)):
 
         return {"legality": legality_response}
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"An unexpected error occurred: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 
 @app.post("/create-family-tree/", response_model=schemas.FamilyTreeResponse)
@@ -240,5 +238,159 @@ async def get_family_tree_endpoint(skip: int = 0, limit: int = 100, db: Session 
         raise e
     except Exception as e:
         logger.error(f"Error in get_family_tree endpoint: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving FamilyTree records")
+
+
+@app.post("/create_land_boundaries/")
+async def create_land_boundaries(
+    land_images_file: List[UploadFile] = File(...),
+    land_images_comments: Optional[str] = Form(None),
+    landscape_view_of_farmland_file: List[UploadFile] = File(...),
+    slope_side: Optional[str] = Form(None),
+    slope_side_comments: Optional[str] = Form(None),
+    shape_of_land: Optional[str] = Form(None),
+    shape_of_land_comment: Optional[str] = Form(None),
+    water_and_electricity_facility: Optional[str] = Form(None),
+    water_facility: Optional[str] = Form(None),
+    electricity_facility: Optional[str] = Form(None),
+    water_and_electricity_facility_comments: Optional[str] = Form(None),
+    masterplan_file: List[UploadFile] = File(...),
+    masterplan_comments: Optional[str] = Form(None),
+    east_boundaries_select: Optional[str] = Form(None),
+    east_owner_name: Optional[str] = Form(None),
+    east_age: Optional[int] = Form(None),
+    east_boundaries_comments: Optional[str] = Form(None),
+    west_boundaries_select: Optional[str] = Form(None),
+    type_of_road: Optional[str] = Form(None),
+    width_of_road: Optional[float] = Form(None),
+    west_boundaries_comments: Optional[str] = Form(None),
+    north_boundaries_select: Optional[str] = Form(None),
+    tree_count: Optional[int] = Form(None),
+    north_boundaries_comments: Optional[str] = Form(None),
+    south_boundaries_select: Optional[str] = Form(None),
+    south_boundaries_comments: Optional[str] = Form(None),
+    survey_report: Optional[str] = Form(None),
+    private_survey_file: List[UploadFile] = File(...),
+    private_survey_number: Optional[str] = Form(None),
+    government_survey_file: List[UploadFile] = File(...),
+    government_survey_number: Optional[str] = Form(None),
+    survey_report_comments: Optional[str] = Form(None),
+    db: Session = Depends(get_db)
+):
+    try:
+        logger.info("Started processing create_land_boundaries request")
+
+        # Save files and get filenames
+        land_images_filenames = utils.save_files(land_images_file, "land_images")
+        landscape_view_of_farmland_filenames = utils.save_files(landscape_view_of_farmland_file, "landscape_view_of_farmland")
+        masterplan_filenames = utils.save_files(masterplan_file, "masterplan")
+        private_survey_filenames = utils.save_files(private_survey_file, "private_survey")
+        government_survey_filenames = utils.save_files(government_survey_file, "government_survey")
+
+        # Prepare data for database insertion
+        land_boundaries_data = schemas.LandBoundariesCreate(
+            land_images_file=land_images_filenames,
+            land_images_comments=land_images_comments,
+            landscape_view_of_farmland_file=landscape_view_of_farmland_filenames,
+            slope_side=slope_side,
+            slope_side_comments=slope_side_comments,
+            shape_of_land=shape_of_land,
+            shape_of_land_comment=shape_of_land_comment,
+            water_and_electricity_facility=water_and_electricity_facility,
+            water_facility=water_facility,
+            electricity_facility=electricity_facility,
+            water_and_electricity_facility_comments=water_and_electricity_facility_comments,
+            masterplan_file=masterplan_filenames,
+            masterplan_comments=masterplan_comments,
+            east_boundaries_select=east_boundaries_select,
+            east_owner_name=east_owner_name,
+            east_age=east_age,
+            east_boundaries_comments=east_boundaries_comments,
+            west_boundaries_select=west_boundaries_select,
+            type_of_road=type_of_road,
+            width_of_road=width_of_road,
+            west_boundaries_comments=west_boundaries_comments,
+            north_boundaries_select=north_boundaries_select,
+            tree_count=tree_count,
+            north_boundaries_comments=north_boundaries_comments,
+            south_boundaries_select=south_boundaries_select,
+            south_boundaries_comments=south_boundaries_comments,
+            survey_report=survey_report,
+            private_survey_file=private_survey_filenames,
+            private_survey_number=private_survey_number,
+            government_survey_file=government_survey_filenames,
+            government_survey_number=government_survey_number,
+            survey_report_comments=survey_report_comments,
+        )
+
+        logger.info("Prepared land boundaries data for database insertion")
+        result = crud.create_land_boundaries(db=db, land_boundaries=land_boundaries_data)
+        logger.info(f"Land Boundaries record created with ID {result.id}")
+
+        response_data = {
+            "status_code": 201,
+            "message": "Land Boundaries created successfully",
+            "data": {
+                "id": result.id,
+                "land_images_file": result.land_images_file,
+                "land_images_comments": result.land_images_comments,
+                "landscape_view_of_farmland_file": result.landscape_view_of_farmland_file,
+                "slope_side": result.slope_side,
+                "slope_side_comments": result.slope_side_comments,
+                "shape_of_land": result.shape_of_land,
+                "shape_of_land_comment": result.shape_of_land_comment,
+                "water_and_electricity_facility": result.water_and_electricity_facility,
+                "water_facility": result.water_facility,
+                "electricity_facility": result.electricity_facility,
+                "water_and_electricity_facility_comments": result.water_and_electricity_facility_comments,
+                "masterplan_file": result.masterplan_file,
+                "masterplan_comments": result.masterplan_comments,
+                "east_boundaries_select": result.east_boundaries_select,
+                "east_owner_name": result.east_owner_name,
+                "east_age": result.east_age,
+                "east_boundaries_comments": result.east_boundaries_comments,
+                "west_boundaries_select": result.west_boundaries_select,
+                "type_of_road": result.type_of_road,
+                "width_of_road": result.width_of_road,
+                "west_boundaries_comments": result.west_boundaries_comments,
+                "north_boundaries_select": result.north_boundaries_select,
+                "tree_count": result.tree_count,
+                "north_boundaries_comments": result.north_boundaries_comments,
+                "south_boundaries_select": result.south_boundaries_select,
+                "south_boundaries_comments": result.south_boundaries_comments,
+                "survey_report": result.survey_report,
+                "private_survey_file": result.private_survey_file,
+                "private_survey_number": result.private_survey_number,
+                "government_survey_file": result.government_survey_file,
+                "government_survey_number": result.government_survey_number,
+                "survey_report_comments": result.survey_report_comments,
+            }
+        }
+
+        return response_data
+    except Exception as e:
+        logger.error(f"Error processing create_land_boundaries request: {e}")
+        return {
+            "status_code": 500,
+            "message": "Failed to create land boundaries",
+            "error": str(e)
+        }
+
+
+@app.get("/List_land_boundaries/", response_model=schemas.LandBoundariesListResponse)
+async def get_land_boundaries_list(db: Session = Depends(get_db)):
+    try:
+        # Query the database to get all land boundaries records
+        land_boundaries_records = db.query(models.LandBoundaries).all()
+
+        if not land_boundaries_records:
+            raise HTTPException(status_code=404, detail="No land boundaries records found")
+
+        # Convert the ORM models to Pydantic models
+        land_boundaries_response = [schemas.LandBoundariesResponse.from_orm(
+            record) for record in land_boundaries_records]
+
+        return schemas.LandBoundariesListResponse(land_boundaries=land_boundaries_response)
+    except Exception as e:
         raise HTTPException(
-            status_code=500, detail="An error occurred while retrieving FamilyTree records")
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}")

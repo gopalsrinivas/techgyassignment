@@ -8,6 +8,7 @@ from .database import SessionLocal, engine
 from fastapi.staticfiles import StaticFiles
 import os
 from pathlib import Path
+from .schemas import ValuationListResponse, ValuationResponse
 
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +22,6 @@ def on_startup():
     models.Base.metadata.create_all(bind=engine)
 
 # Dependency to get the database session
-
 
 def get_db():
     db = SessionLocal()
@@ -394,3 +394,178 @@ async def get_land_boundaries_list(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
+
+@app.post("/create_valuation/")
+async def create_valuation(
+    village_map_or_naksha_file: List[UploadFile] = File(...),
+    village_map_or_naksha_comments: Optional[str] = Form(None),
+    sub_register_value_file: List[UploadFile] = File(...),
+    sub_register_value_comments: Optional[str] = Form(None),
+    valuator_report_file: List[UploadFile] = File(...),
+    valuator_report_comments: Optional[str] = Form(None),
+    land_owner_value_file: List[UploadFile] = File(...),
+    land_owner_value_comments: Optional[str] = Form(None),
+    road_approach_type: Optional[str] = Form(None),
+    road_width: Optional[float] = Form(None),
+    road_approach_comments: Optional[str] = Form(None),
+    water_facility: Optional[bool] = Form(None),
+    primary_source_of_land: Optional[str] = Form(None),
+    water_facility_comments: Optional[str] = Form(None),
+    recent_transaction_in_surrounding: Optional[str] = Form(None),  # 'Yes', 'No', 'NA'
+    valuation_per_acre: Optional[float] = Form(None),
+    local_market_acre_price: Optional[float] = Form(None),
+    recent_transaction_comments: Optional[str] = Form(None),
+    electricity_facility: Optional[bool] = Form(None),
+    electricity_comments: Optional[str] = Form(None),
+    existing_trees: Optional[bool] = Form(None),
+    tree_count: Optional[int] = Form(None),
+    trees_comments: Optional[str] = Form(None),
+    surrounding_mines: Optional[bool] = Form(None),
+    mines_comments: Optional[str] = Form(None),
+    disadvantages_comments: Optional[str] = Form(None),
+    future_plans_comments: Optional[str] = Form(None),
+    upcoming_infrastructures: Optional[bool] = Form(None),
+    infrastructures_list: Optional[str] = Form(None),
+    infrastructures_comments: Optional[str] = Form(None),
+    railway_connectivity: Optional[bool] = Form(None),
+    railway_distance: Optional[float] = Form(None),
+    railway_comments: Optional[str] = Form(None),
+    airport_connectivity: Optional[bool] = Form(None),
+    airport_distance: Optional[float] = Form(None),
+    airport_comments: Optional[str] = Form(None),
+    db: Session = Depends(get_db)
+):
+    try:
+        logger.info("Started processing create_valuation request")
+
+        # Save files and get filenames
+        village_map_or_naksha_filenames = utils.save_files(
+            village_map_or_naksha_file, "village_map_or_naksha")
+        sub_register_value_filenames = utils.save_files(
+            sub_register_value_file, "sub_register_value")
+        valuator_report_filenames = utils.save_files(
+            valuator_report_file, "valuator_report")
+        land_owner_value_filenames = utils.save_files(
+            land_owner_value_file, "land_owner_value")
+
+        # Prepare data for database insertion
+        valuation_data = schemas.ValuationCreate(
+            village_map_or_naksha_file=village_map_or_naksha_filenames,
+            village_map_or_naksha_comments=village_map_or_naksha_comments,
+            sub_register_value_file=sub_register_value_filenames,
+            sub_register_value_comments=sub_register_value_comments,
+            valuator_report_file=valuator_report_filenames,
+            valuator_report_comments=valuator_report_comments,
+            land_owner_value_file=land_owner_value_filenames,
+            land_owner_value_comments=land_owner_value_comments,
+            road_approach_type=road_approach_type,
+            road_width=road_width,
+            road_approach_comments=road_approach_comments,
+            water_facility=water_facility,
+            primary_source_of_land=primary_source_of_land,
+            water_facility_comments=water_facility_comments,
+            recent_transaction_in_surrounding=recent_transaction_in_surrounding,
+            valuation_per_acre=valuation_per_acre,
+            local_market_acre_price=local_market_acre_price,
+            recent_transaction_comments=recent_transaction_comments,
+            electricity_facility=electricity_facility,
+            electricity_comments=electricity_comments,
+            existing_trees=existing_trees,
+            tree_count=tree_count,
+            trees_comments=trees_comments,
+            surrounding_mines=surrounding_mines,
+            mines_comments=mines_comments,
+            disadvantages_comments=disadvantages_comments,
+            future_plans_comments=future_plans_comments,
+            upcoming_infrastructures=upcoming_infrastructures,
+            infrastructures_list=infrastructures_list,
+            infrastructures_comments=infrastructures_comments,
+            railway_connectivity=railway_connectivity,
+            railway_distance=railway_distance,
+            railway_comments=railway_comments,
+            airport_connectivity=airport_connectivity,
+            airport_distance=airport_distance,
+            airport_comments=airport_comments
+        )
+
+        logger.info("Prepared valuation data for database insertion")
+        result = crud.create_valuation(db=db, valuation=valuation_data)
+        logger.info(f"Valuation record created with ID {result.id}")
+
+        # Prepare the response data with success code, message, and response data
+        response_data = {
+            "status_code": 201,
+            "message": "Valuation created successfully",
+            "data": {
+                "id": result.id,
+                "village_map_or_naksha_file": result.village_map_or_naksha_file,
+                "village_map_or_naksha_comments": result.village_map_or_naksha_comments,
+                "sub_register_value_file": result.sub_register_value_file,
+                "sub_register_value_comments": result.sub_register_value_comments,
+                "valuator_report_file": result.valuator_report_file,
+                "valuator_report_comments": result.valuator_report_comments,
+                "land_owner_value_file": result.land_owner_value_file,
+                "land_owner_value_comments": result.land_owner_value_comments,
+                "road_approach_type": result.road_approach_type,
+                "road_width": result.road_width,
+                "road_approach_comments": result.road_approach_comments,
+                "water_facility": result.water_facility,
+                "primary_source_of_land": result.primary_source_of_land,
+                "water_facility_comments": result.water_facility_comments,
+                "recent_transaction_in_surrounding": result.recent_transaction_in_surrounding,
+                "valuation_per_acre": result.valuation_per_acre,
+                "local_market_acre_price": result.local_market_acre_price,
+                "recent_transaction_comments": result.recent_transaction_comments,
+                "electricity_facility": result.electricity_facility,
+                "electricity_comments": result.electricity_comments,
+                "existing_trees": result.existing_trees,
+                "tree_count": result.tree_count,
+                "trees_comments": result.trees_comments,
+                "surrounding_mines": result.surrounding_mines,
+                "mines_comments": result.mines_comments,
+                "disadvantages_comments": result.disadvantages_comments,
+                "future_plans_comments": result.future_plans_comments,
+                "upcoming_infrastructures": result.upcoming_infrastructures,
+                "infrastructures_list": result.infrastructures_list,
+                "infrastructures_comments": result.infrastructures_comments,
+                "railway_connectivity": result.railway_connectivity,
+                "railway_distance": result.railway_distance,
+                "railway_comments": result.railway_comments,
+                "airport_connectivity": result.airport_connectivity,
+                "airport_distance": result.airport_distance,
+                "airport_comments": result.airport_comments,
+            }
+        }
+
+        return response_data
+    except Exception as e:
+        logger.error(f"Error processing create_valuation request: {e}")
+        return {
+            "status_code": 500,
+            "message": "Failed to create valuation",
+            "error": str(e)
+        }
+
+
+@app.get("/list_valuations/", response_model=ValuationListResponse)
+async def get_valuation_list(db: Session = Depends(get_db)):
+    try:
+        # Query the database to get all valuation records
+        valuation_records = db.query(models.Valuation).all()
+
+        if not valuation_records:
+            raise HTTPException(
+                status_code=404, detail="No valuation records found")
+
+        # Convert ORM models to Pydantic models
+        valuation_response = [
+            ValuationResponse.from_orm(record) for record in valuation_records
+        ]
+
+        return ValuationListResponse(valuations=valuation_response)
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"An unexpected error occurred: {str(e)}"
+        )

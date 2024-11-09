@@ -247,9 +247,99 @@ class LandBoundariesResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
 class LandBoundariesListResponse(BaseModel):
     land_boundaries: List[LandBoundariesResponse]
+
+    class Config:
+        from_attributes = True
+class ValuationCreate(BaseModel):
+    village_map_or_naksha_file: Optional[List[str]] = None
+    village_map_or_naksha_comments: Optional[str] = None
+    sub_register_value_file: Optional[List[str]] = None
+    sub_register_value_comments: Optional[str] = None
+    valuator_report_file: Optional[List[str]] = None
+    valuator_report_comments: Optional[str] = None
+    land_owner_value_file: Optional[List[str]] = None
+    land_owner_value_comments: Optional[str] = None
+    road_approach_type: Optional[str] = None
+    road_width: Optional[float] = None
+    road_approach_comments: Optional[str] = None
+    water_facility: Optional[bool] = None
+    primary_source_of_land: Optional[str] = None
+    water_facility_comments: Optional[str] = None
+    recent_transaction_in_surrounding: Optional[str] = None
+    valuation_per_acre: Optional[float] = None
+    local_market_acre_price: Optional[float] = None
+    recent_transaction_comments: Optional[str] = None
+    electricity_facility: Optional[bool] = None
+    electricity_comments: Optional[str] = None
+    existing_trees: Optional[bool] = None
+    tree_count: Optional[int] = None
+    trees_comments: Optional[str] = None
+    surrounding_mines: Optional[bool] = None
+    mines_comments: Optional[str] = None
+    disadvantages_comments: Optional[str] = None
+    future_plans_comments: Optional[str] = None
+    upcoming_infrastructures: Optional[bool] = None
+    infrastructures_list: Optional[str] = None
+    infrastructures_comments: Optional[str] = None
+    railway_connectivity: Optional[bool] = None
+    railway_distance: Optional[float] = None
+    railway_comments: Optional[str] = None
+    airport_connectivity: Optional[bool] = None
+    airport_distance: Optional[float] = None
+    airport_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+# Define the response models
+class ValuationResponse(BaseModel):
+    id: int
+    village_map_or_naksha_file: Optional[List[str]] = None
+    village_map_or_naksha_comments: Optional[str] = None
+    sub_register_value_file: Optional[List[str]] = None
+    sub_register_value_comments: Optional[str] = None
+    valuator_report_file: Optional[List[str]] = None
+    valuator_report_comments: Optional[str] = None
+    land_owner_value_file: Optional[List[str]] = None
+    land_owner_value_comments: Optional[str] = None
+    road_approach_type: Optional[str] = None
+    road_width: Optional[float] = None
+    road_approach_comments: Optional[str] = None
+    water_facility: Optional[bool] = None
+    primary_source_of_land: Optional[str] = None
+    water_facility_comments: Optional[str] = None
+    recent_transaction_in_surrounding: Optional[str] = None
+    valuation_per_acre: Optional[float] = None
+    local_market_acre_price: Optional[float] = None
+    recent_transaction_comments: Optional[str] = None
+    electricity_facility: Optional[bool] = None
+    electricity_comments: Optional[str] = None
+    existing_trees: Optional[bool] = None
+    tree_count: Optional[int] = None
+    trees_comments: Optional[str] = None
+    surrounding_mines: Optional[bool] = None
+    mines_comments: Optional[str] = None
+    disadvantages_comments: Optional[str] = None
+    future_plans_comments: Optional[str] = None
+    upcoming_infrastructures: Optional[bool] = None
+    infrastructures_list: Optional[str] = None
+    infrastructures_comments: Optional[str] = None
+    railway_connectivity: Optional[bool] = None
+    railway_distance: Optional[float] = None
+    railway_comments: Optional[str] = None
+    airport_connectivity: Optional[bool] = None
+    airport_distance: Optional[float] = None
+    airport_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ValuationListResponse(BaseModel):
+    valuations: List[ValuationResponse]
 
     class Config:
         from_attributes = True

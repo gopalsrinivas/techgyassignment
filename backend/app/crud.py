@@ -107,3 +107,48 @@ def create_land_boundaries(db: Session, land_boundaries: schemas.LandBoundariesC
     db.commit()
     db.refresh(db_land_boundaries)
     return db_land_boundaries
+
+
+def create_valuation(db: Session, valuation: schemas.ValuationCreate):
+    db_valuation = models.Valuation(
+        village_map_or_naksha_file=valuation.village_map_or_naksha_file,
+        village_map_or_naksha_comments=valuation.village_map_or_naksha_comments,
+        sub_register_value_file=valuation.sub_register_value_file,
+        sub_register_value_comments=valuation.sub_register_value_comments,
+        valuator_report_file=valuation.valuator_report_file,
+        valuator_report_comments=valuation.valuator_report_comments,
+        land_owner_value_file=valuation.land_owner_value_file,
+        land_owner_value_comments=valuation.land_owner_value_comments,
+        road_approach_type=valuation.road_approach_type,
+        road_width=valuation.road_width,
+        road_approach_comments=valuation.road_approach_comments,
+        water_facility=valuation.water_facility,
+        primary_source_of_land=valuation.primary_source_of_land,
+        water_facility_comments=valuation.water_facility_comments,
+        recent_transaction_in_surrounding=valuation.recent_transaction_in_surrounding,
+        valuation_per_acre=valuation.valuation_per_acre,
+        local_market_acre_price=valuation.local_market_acre_price,
+        recent_transaction_comments=valuation.recent_transaction_comments,
+        electricity_facility=valuation.electricity_facility,
+        electricity_comments=valuation.electricity_comments,
+        existing_trees=valuation.existing_trees,
+        tree_count=valuation.tree_count,
+        trees_comments=valuation.trees_comments,
+        surrounding_mines=valuation.surrounding_mines,
+        mines_comments=valuation.mines_comments,
+        disadvantages_comments=valuation.disadvantages_comments,
+        future_plans_comments=valuation.future_plans_comments,
+        upcoming_infrastructures=valuation.upcoming_infrastructures,
+        infrastructures_list=valuation.infrastructures_list,
+        infrastructures_comments=valuation.infrastructures_comments,
+        railway_connectivity=valuation.railway_connectivity,
+        railway_distance=valuation.railway_distance,
+        railway_comments=valuation.railway_comments,
+        airport_connectivity=valuation.airport_connectivity,
+        airport_distance=valuation.airport_distance,
+        airport_comments=valuation.airport_comments
+    )
+    db.add(db_valuation)
+    db.commit()
+    db.refresh(db_valuation)
+    return db_valuation

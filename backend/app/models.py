@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, JSON, String
+from sqlalchemy import Column, Integer, Text, JSON, String, Boolean, Float
 from .database import Base
 
 class Legality(Base):
@@ -85,3 +85,45 @@ class LandBoundaries(Base):
     government_survey_file = Column(JSON)
     government_survey_number = Column(String)
     survey_report_comments = Column(Text)
+
+
+class Valuation(Base):
+    __tablename__ = "valuation"
+
+    id = Column(Integer, primary_key=True, index=True)
+    village_map_or_naksha_file = Column(JSON)
+    village_map_or_naksha_comments = Column(Text)
+    sub_register_value_file = Column(JSON)
+    sub_register_value_comments = Column(Text)
+    valuator_report_file = Column(JSON)
+    valuator_report_comments = Column(Text)
+    land_owner_value_file = Column(JSON)
+    land_owner_value_comments = Column(Text)
+    road_approach_type = Column(String(255))
+    road_width = Column(Float)
+    road_approach_comments = Column(Text)
+    water_facility = Column(Boolean)
+    primary_source_of_land = Column(String(255))
+    water_facility_comments = Column(Text)
+    recent_transaction_in_surrounding = Column(String(50))  # 'Yes', 'No', 'NA'
+    valuation_per_acre = Column(Float)
+    local_market_acre_price = Column(Float)
+    recent_transaction_comments = Column(Text)
+    electricity_facility = Column(Boolean)
+    electricity_comments = Column(Text)
+    existing_trees = Column(Boolean)
+    tree_count = Column(Integer)
+    trees_comments = Column(Text)
+    surrounding_mines = Column(Boolean)
+    mines_comments = Column(Text)
+    disadvantages_comments = Column(Text)
+    future_plans_comments = Column(Text)
+    upcoming_infrastructures = Column(Boolean)
+    infrastructures_list = Column(Text)  # For list of infrastructures
+    infrastructures_comments = Column(Text)
+    railway_connectivity = Column(Boolean)
+    railway_distance = Column(Float)
+    railway_comments = Column(Text)
+    airport_connectivity = Column(Boolean)
+    airport_distance = Column(Float)
+    airport_comments = Column(Text)

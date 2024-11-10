@@ -152,3 +152,36 @@ def create_valuation(db: Session, valuation: schemas.ValuationCreate):
     db.commit()
     db.refresh(db_valuation)
     return db_valuation
+
+
+def create_agriculture_certification(db: Session, certification_data: schemas.AgricultureCertificationCreate):
+    db_certification = models.AgricultureCertification(
+        local_agriculture_officer_report_file=certification_data.local_agriculture_officer_report_file,
+        local_agriculture_officer_report_comments=certification_data.local_agriculture_officer_report_comments,
+        last_5_years_crop_yielding_report_file=certification_data.last_5_years_crop_yielding_report_file,
+        last_5_years_crop_yielding_report_comments=certification_data.last_5_years_crop_yielding_report_comments,
+        soil=certification_data.soil,
+        soil_comments=certification_data.soil_comments,
+        types_of_crop=certification_data.types_of_crop,
+        types_of_crop_comments=certification_data.types_of_crop_comments,
+        types_of_crop_can_be_grown=certification_data.types_of_crop_can_be_grown,
+        types_of_crop_can_be_grown_comments=certification_data.types_of_crop_can_be_grown_comments,
+        ground_water_level=certification_data.ground_water_level,
+        ground_water_level_comments=certification_data.ground_water_level_comments,
+        current_yielding_cost=certification_data.current_yielding_cost,
+        current_returns_from_yield=certification_data.current_returns_from_yield,
+        current_yielding_cost_comments=certification_data.current_yielding_cost_comments,
+        current_cultivation=certification_data.current_cultivation,
+        current_cultivation_name=certification_data.current_cultivation_name,
+        current_cultivation_contact_details=certification_data.current_cultivation_contact_details,
+        current_cultivation_comments=certification_data.current_cultivation_comments,
+        natural_advantages_disadvantages_comments=certification_data.natural_advantages_disadvantages_comments,
+        future_crop_plans_comments=certification_data.future_crop_plans_comments,
+        suggested_crop_by_green_land=certification_data.suggested_crop_by_green_land,
+        best_returns=certification_data.best_returns,
+        suggested_crop_comments=certification_data.suggested_crop_comments
+    )
+    db.add(db_certification)
+    db.commit()
+    db.refresh(db_certification)
+    return db_certification

@@ -8,7 +8,7 @@ from .database import SessionLocal, engine
 from fastapi.staticfiles import StaticFiles
 import os
 from pathlib import Path
-from .schemas import ValuationListResponse, ValuationResponse
+from .schemas import ValuationListResponse, ValuationResponse, AgricultureCertificationListResponse
 
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -440,8 +440,7 @@ async def create_valuation(
         logger.info("Started processing create_valuation request")
 
         # Save files and get filenames
-        village_map_or_naksha_filenames = utils.save_files(
-            village_map_or_naksha_file, "village_map_or_naksha")
+        village_map_or_naksha_filenames = utils.save_files(village_map_or_naksha_file, "village_map_or_naksha")
         sub_register_value_filenames = utils.save_files(
             sub_register_value_file, "sub_register_value")
         valuator_report_filenames = utils.save_files(
@@ -555,8 +554,7 @@ async def get_valuation_list(db: Session = Depends(get_db)):
         valuation_records = db.query(models.Valuation).all()
 
         if not valuation_records:
-            raise HTTPException(
-                status_code=404, detail="No valuation records found")
+            raise HTTPException(status_code=404, detail="No valuation records found")
 
         # Convert ORM models to Pydantic models
         valuation_response = [
@@ -569,3 +567,127 @@ async def get_valuation_list(db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=500, detail=f"An unexpected error occurred: {str(e)}"
         )
+
+
+@app.post("/create_agriculture_certification/")
+async def create_agriculture_certification(
+    local_agriculture_officer_report_file: List[UploadFile] = File(...),
+    local_agriculture_officer_report_comments: Optional[str] = Form(None),
+    last_5_years_crop_yielding_report_file: List[UploadFile] = File(...),
+    last_5_years_crop_yielding_report_comments: Optional[str] = Form(None),
+    soil=Form(None),
+    soil_comments=Form(None),
+    types_of_crop=Form(None),
+    types_of_crop_comments=Form(None),
+    types_of_crop_can_be_grown=Form(None),
+    types_of_crop_can_be_grown_comments=Form(None),
+    ground_water_level=Form(None),
+    ground_water_level_comments=Form(None),
+    current_yielding_cost=Form(None),
+    current_returns_from_yield=Form(None),
+    current_yielding_cost_comments=Form(None),
+    current_cultivation=Form(None),
+    current_cultivation_name=Form(None),
+    current_cultivation_contact_details=Form(None),
+    current_cultivation_comments=Form(None),
+    natural_advantages_disadvantages_comments=Form(None),
+    future_crop_plans_comments=Form(None),
+    suggested_crop_by_green_land=Form(None),
+    best_returns=Form(None),
+    suggested_crop_comments=Form(None),
+    db: Session = Depends(get_db)
+):
+    try:
+        logger.info(
+            "Started processing create_agriculture_certification request")
+
+        # Save files and get filenames
+        local_agriculture_officer_report_file = utils.save_files(
+            local_agriculture_officer_report_file, "local_agriculture_officer_report_file")
+        last_5_years_crop_yielding_report_file = utils.save_files(
+            last_5_years_crop_yielding_report_file, "last_5_years_crop_yielding_report_file")
+
+        agriculture_certification = schemas.AgricultureCertificationCreate(
+            local_agriculture_officer_report_file=local_agriculture_officer_report_file,
+            local_agriculture_officer_report_comments=local_agriculture_officer_report_comments,
+            last_5_years_crop_yielding_report_file=last_5_years_crop_yielding_report_file,
+            last_5_years_crop_yielding_report_comments=last_5_years_crop_yielding_report_comments,
+            soil=soil,
+            soil_comments=soil_comments,
+            types_of_crop=types_of_crop,
+            types_of_crop_comments=types_of_crop_comments,
+            types_of_crop_can_be_grown=types_of_crop_can_be_grown,
+            types_of_crop_can_be_grown_comments=types_of_crop_can_be_grown_comments,
+            ground_water_level=ground_water_level,
+            ground_water_level_comments=ground_water_level_comments,
+            current_yielding_cost=current_yielding_cost,
+            current_returns_from_yield=current_returns_from_yield,
+            current_yielding_cost_comments=current_yielding_cost_comments,
+            current_cultivation=current_cultivation,
+            current_cultivation_name=current_cultivation_name,
+            current_cultivation_contact_details=current_cultivation_contact_details,
+            current_cultivation_comments=current_cultivation_comments,
+            natural_advantages_disadvantages_comments=natural_advantages_disadvantages_comments,
+            future_crop_plans_comments=future_crop_plans_comments,
+            suggested_crop_by_green_land=suggested_crop_by_green_land,
+            best_returns=best_returns,
+            suggested_crop_comments=suggested_crop_comments
+        )
+
+        # Create the agriculture certification entry
+        new_agriculture_certification = crud.create_agriculture_certification(
+            db=db, certification_data=agriculture_certification
+        )
+
+        # Prepare the response
+        response_data = {
+            "status_code": 201,
+            "message": "Agriculture certification created successfully",
+            "data": {
+                "id": new_agriculture_certification.id,
+                "local_agriculture_officer_report_file": new_agriculture_certification.local_agriculture_officer_report_file,
+                "local_agriculture_officer_report_comments": new_agriculture_certification.local_agriculture_officer_report_comments,
+                "last_5_years_crop_yielding_report_file": new_agriculture_certification.last_5_years_crop_yielding_report_file,
+                "last_5_years_crop_yielding_report_comments": new_agriculture_certification.last_5_years_crop_yielding_report_comments,
+                "soil": new_agriculture_certification.soil,
+                "soil_comments": new_agriculture_certification.soil_comments,
+                "types_of_crop": new_agriculture_certification.types_of_crop,
+                "types_of_crop_comments": new_agriculture_certification.types_of_crop_comments,
+                "types_of_crop_can_be_grown": new_agriculture_certification.types_of_crop_can_be_grown,
+                "types_of_crop_can_be_grown_comments": new_agriculture_certification.types_of_crop_can_be_grown_comments,
+                "ground_water_level": new_agriculture_certification.ground_water_level,
+                "ground_water_level_comments": new_agriculture_certification.ground_water_level_comments,
+                "current_yielding_cost": new_agriculture_certification.current_yielding_cost,
+                "current_returns_from_yield": new_agriculture_certification.current_returns_from_yield,
+                "current_yielding_cost_comments": new_agriculture_certification.current_yielding_cost_comments,
+                "current_cultivation": new_agriculture_certification.current_cultivation,
+                "current_cultivation_name": new_agriculture_certification.current_cultivation_name,
+                "current_cultivation_contact_details": new_agriculture_certification.current_cultivation_contact_details,
+                "current_cultivation_comments": new_agriculture_certification.current_cultivation_comments,
+                "natural_advantages_disadvantages_comments": new_agriculture_certification.natural_advantages_disadvantages_comments,
+                "future_crop_plans_comments": new_agriculture_certification.future_crop_plans_comments,
+                "suggested_crop_by_green_land": new_agriculture_certification.suggested_crop_by_green_land,
+                "best_returns": new_agriculture_certification.best_returns,
+                "suggested_crop_comments": new_agriculture_certification.suggested_crop_comments
+            }
+        }
+
+        logger.info("Agriculture certification created successfully")
+        return response_data
+    except Exception as e:
+        logger.error(
+            f"Error processing create_agriculture_certification request: {e}")
+        return {
+            "status_code": 500,
+            "message": "Failed to create agriculture certification",
+            "error": str(e)
+        }
+
+# Get ALL fetch all AgricultureCertification records
+@app.get("/list_agriculture_certifications/", response_model=schemas.AgricultureCertificationListResponse)
+async def list_agriculture_certifications(db: Session = Depends(get_db)):
+    agriculture_records = db.query(models.AgricultureCertification).all()
+    if not agriculture_records:
+        raise HTTPException(status_code=404, detail="No agriculture certification records found")
+    agriculture_response = [schemas.AgricultureCertificationResponse.from_orm(record) for record in agriculture_records]
+    return {"agriculture_certifications": agriculture_response}

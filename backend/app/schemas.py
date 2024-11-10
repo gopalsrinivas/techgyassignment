@@ -343,3 +343,63 @@ class ValuationListResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AgricultureCertificationCreate(BaseModel):
+    local_agriculture_officer_report_file: Optional[List[str]] = None
+    local_agriculture_officer_report_comments: Optional[str] = None
+    last_5_years_crop_yielding_report_file: Optional[List[str]] = None
+    last_5_years_crop_yielding_report_comments: Optional[str] = None
+    soil: Optional[str] = None
+    soil_comments: Optional[str] = None
+    types_of_crop: Optional[str] = None
+    types_of_crop_comments: Optional[str] = None
+    types_of_crop_can_be_grown: Optional[str] = None
+    types_of_crop_can_be_grown_comments: Optional[str] = None
+    ground_water_level: Optional[str] = None
+    ground_water_level_comments: Optional[str] = None
+    current_yielding_cost: Optional[int] = None
+    current_returns_from_yield: Optional[int] = None
+    current_yielding_cost_comments: Optional[str] = None
+    current_cultivation: Optional[str] = None
+    current_cultivation_name: Optional[str] = None
+    current_cultivation_contact_details: Optional[str] = None
+    current_cultivation_comments: Optional[str] = None
+    natural_advantages_disadvantages_comments: Optional[str] = None
+    future_crop_plans_comments: Optional[str] = None
+    suggested_crop_by_green_land: Optional[str] = None
+    best_returns: Optional[int] = None
+    suggested_crop_comments: Optional[str] = None
+    class Config:
+        from_attributes = True
+
+class AgricultureCertificationResponse(BaseModel):
+    id: int
+    local_agriculture_officer_report_file: Optional[List[str]] = None
+    local_agriculture_officer_report_comments: Optional[str] = None
+    last_5_years_crop_yielding_report_file: Optional[List[str]] = None
+    last_5_years_crop_yielding_report_comments: Optional[str] = None
+    soil: Optional[str] = None
+    soil_comments: Optional[str] = None
+    types_of_crop: Optional[str] = None
+    types_of_crop_comments: Optional[str] = None
+    types_of_crop_can_be_grown: Optional[str] = None
+    types_of_crop_can_be_grown_comments: Optional[str] = None
+    ground_water_level: Optional[str] = None
+    ground_water_level_comments: Optional[str] = None
+    current_yielding_cost: Optional[int] = None
+    current_returns_from_yield: Optional[int] = None
+    current_yielding_cost_comments: Optional[str] = None
+    current_cultivation: Optional[str] = None
+    current_cultivation_name: Optional[str] = None
+    current_cultivation_contact_details: Optional[str] = None
+    current_cultivation_comments: Optional[str] = None
+    natural_advantages_disadvantages_comments: Optional[str] = None
+    future_crop_plans_comments: Optional[str] = None
+    suggested_crop_by_green_land: Optional[str] = None
+    best_returns: Optional[int] = None
+    suggested_crop_comments: Optional[str] = None
+    class Config:
+        from_attributes = True
+
+class AgricultureCertificationListResponse(BaseModel):
+    agriculture_certifications: List[AgricultureCertificationResponse]

@@ -403,3 +403,39 @@ class AgricultureCertificationResponse(BaseModel):
 
 class AgricultureCertificationListResponse(BaseModel):
     agriculture_certifications: List[AgricultureCertificationResponse]
+
+
+class LocalIntelligenceCreate(BaseModel):
+    issues_with_boundaries_and_owners: Optional[str] = None
+    issues_with_boundaries_and_owners_comments: Optional[str] = None
+    local_liabilities: Optional[str] = None
+    local_liabilities_comments: Optional[str] = None
+    bank_loans_or_pending_loans: Optional[str] = None
+    loan_amount: Optional[int] = None
+    bank_loans_or_pending_loans_comments: Optional[str] = None
+    owner_mindset: Optional[str] = None
+    owner_mindset_comments: Optional[str] = None
+    source_person: Optional[str] = None
+    source_person_name: Optional[str] = None
+    source_person_contact_details: Optional[str] = None
+    source_person_comments: Optional[str] = None
+    paper_agreement: Optional[str] = None
+    agreement_type: Optional[str] = None
+    last_price_of_land: Optional[int] = None
+    paper_agreement_comments: Optional[str] = None
+    previous_transactions_on_land: Optional[str] = None
+    previous_transaction_amount: Optional[int] = None
+    previous_transaction_comments: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LocalIntelligenceResponse(LocalIntelligenceCreate):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class LocalIntelligenceListResponse(BaseModel):
+    local_intelligences: List[LocalIntelligenceResponse]

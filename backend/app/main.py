@@ -691,3 +691,122 @@ async def list_agriculture_certifications(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No agriculture certification records found")
     agriculture_response = [schemas.AgricultureCertificationResponse.from_orm(record) for record in agriculture_records]
     return {"agriculture_certifications": agriculture_response}
+
+
+@app.post("/create_local_intelligence/")
+async def create_local_intelligence(
+    issues_with_boundaries_and_owners: Optional[str] = Form(None),
+    issues_with_boundaries_and_owners_comments: Optional[str] = Form(None),
+    local_liabilities: Optional[str] = Form(None),
+    local_liabilities_comments: Optional[str] = Form(None),
+    bank_loans_or_pending_loans: Optional[str] = Form(None),
+    loan_amount: Optional[int] = Form(None),
+    bank_loans_or_pending_loans_comments: Optional[str] = Form(None),
+    owner_mindset: Optional[str] = Form(None),
+    owner_mindset_comments: Optional[str] = Form(None),
+    source_person: Optional[str] = Form(None),
+    source_person_name: Optional[str] = Form(None),
+    source_person_contact_details: Optional[str] = Form(None),
+    source_person_comments: Optional[str] = Form(None),
+    paper_agreement: Optional[str] = Form(None),
+    agreement_type: Optional[str] = Form(None),
+    last_price_of_land: Optional[int] = Form(None),
+    paper_agreement_comments: Optional[str] = Form(None),
+    previous_transactions_on_land: Optional[str] = Form(None),
+    previous_transaction_amount: Optional[int] = Form(None),
+    previous_transaction_comments: Optional[str] = Form(None),
+    db: Session = Depends(get_db)
+):
+    try:
+        logger.info("Started processing create_local_intelligence request")
+
+        # Prepare the intelligence data
+        local_intelligence = schemas.LocalIntelligenceCreate(
+            issues_with_boundaries_and_owners=issues_with_boundaries_and_owners,
+            issues_with_boundaries_and_owners_comments=issues_with_boundaries_and_owners_comments,
+            local_liabilities=local_liabilities,
+            local_liabilities_comments=local_liabilities_comments,
+            bank_loans_or_pending_loans=bank_loans_or_pending_loans,
+            loan_amount=loan_amount,
+            bank_loans_or_pending_loans_comments=bank_loans_or_pending_loans_comments,
+            owner_mindset=owner_mindset,
+            owner_mindset_comments=owner_mindset_comments,
+            source_person=source_person,
+            source_person_name=source_person_name,
+            source_person_contact_details=source_person_contact_details,
+            source_person_comments=source_person_comments,
+            paper_agreement=paper_agreement,
+            agreement_type=agreement_type,
+            last_price_of_land=last_price_of_land,
+            paper_agreement_comments=paper_agreement_comments,
+            previous_transactions_on_land=previous_transactions_on_land,
+            previous_transaction_amount=previous_transaction_amount,
+            previous_transaction_comments=previous_transaction_comments
+        )
+
+        # Create the local intelligence entry
+        new_local_intelligence = crud.create_local_intelligence(
+            db=db, intelligence_data=local_intelligence
+        )
+
+        # Structure the response data
+        response_data = {
+            "status_code": 201,
+            "message": "Local intelligence created successfully",
+            "data": {
+                "id": new_local_intelligence.id,
+                "issues_with_boundaries_and_owners": new_local_intelligence.issues_with_boundaries_and_owners,
+                "issues_with_boundaries_and_owners_comments": new_local_intelligence.issues_with_boundaries_and_owners_comments,
+                "local_liabilities": new_local_intelligence.local_liabilities,
+                "local_liabilities_comments": new_local_intelligence.local_liabilities_comments,
+                "bank_loans_or_pending_loans": new_local_intelligence.bank_loans_or_pending_loans,
+                "loan_amount": new_local_intelligence.loan_amount,
+                "bank_loans_or_pending_loans_comments": new_local_intelligence.bank_loans_or_pending_loans_comments,
+                "owner_mindset": new_local_intelligence.owner_mindset,
+                "owner_mindset_comments": new_local_intelligence.owner_mindset_comments,
+                "source_person": new_local_intelligence.source_person,
+                "source_person_name": new_local_intelligence.source_person_name,
+                "source_person_contact_details": new_local_intelligence.source_person_contact_details,
+                "source_person_comments": new_local_intelligence.source_person_comments,
+                "paper_agreement": new_local_intelligence.paper_agreement,
+                "agreement_type": new_local_intelligence.agreement_type,
+                "last_price_of_land": new_local_intelligence.last_price_of_land,
+                "paper_agreement_comments": new_local_intelligence.paper_agreement_comments,
+                "previous_transactions_on_land": new_local_intelligence.previous_transactions_on_land,
+                "previous_transaction_amount": new_local_intelligence.previous_transaction_amount,
+                "previous_transaction_comments": new_local_intelligence.previous_transaction_comments
+            }
+        }
+
+        logger.info("Local intelligence created successfully")
+        return response_data
+
+    except Exception as e:
+        logger.error(
+            f"Error processing create_local_intelligence request: {e}")
+        return {
+            "status_code": 500,
+            "message": "Failed to create local intelligence",
+            "error": str(e)
+        }
+
+# List all LocalIntelligence records (GET)
+@app.get("/list_local_intelligences/", response_model=schemas.LocalIntelligenceListResponse)
+async def list_local_intelligences(db: Session = Depends(get_db)):
+    try:
+        local_intelligence_records = db.query(models.LocalIntelligence).all()
+        if not local_intelligence_records:
+            raise HTTPException(
+                status_code=404, detail="No local intelligence records found")
+
+        # Prepare response
+        local_intelligence_response = [
+            schemas.LocalIntelligenceResponse.from_orm(record) for record in local_intelligence_records
+        ]
+        return {"local_intelligences": local_intelligence_response}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching records: {e}"
+        )

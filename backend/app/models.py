@@ -156,3 +156,29 @@ class AgricultureCertification(Base):
     suggested_crop_by_green_land = Column(Text)
     best_returns = Column(Integer)
     suggested_crop_comments = Column(Text)
+
+
+class LocalIntelligence(Base):
+    __tablename__ = "local_intelligence"
+
+    id = Column(Integer, primary_key=True, index=True)
+    issues_with_boundaries_and_owners = Column(String)
+    issues_with_boundaries_and_owners_comments = Column(Text)
+    local_liabilities = Column(String)
+    local_liabilities_comments = Column(Text)
+    bank_loans_or_pending_loans = Column(String)
+    loan_amount = Column(Integer)
+    bank_loans_or_pending_loans_comments = Column(Text)
+    owner_mindset = Column(String)
+    owner_mindset_comments = Column(Text)
+    source_person = Column(String)
+    source_person_name = Column(String)
+    source_person_contact_details = Column(String)
+    source_person_comments = Column(Text)
+    paper_agreement = Column(String)
+    agreement_type = Column(String)
+    last_price_of_land = Column(Integer)
+    paper_agreement_comments = Column(Text)
+    previous_transactions_on_land = Column(String)
+    previous_transaction_amount = Column(Integer)
+    previous_transaction_comments = Column(Text)

@@ -185,3 +185,36 @@ def create_agriculture_certification(db: Session, certification_data: schemas.Ag
     db.commit()
     db.refresh(db_certification)
     return db_certification
+
+
+def create_local_intelligence(db: Session, intelligence_data: schemas.LocalIntelligenceCreate):
+    try:
+        db_intelligence = models.LocalIntelligence(
+            issues_with_boundaries_and_owners=intelligence_data.issues_with_boundaries_and_owners,
+            issues_with_boundaries_and_owners_comments=intelligence_data.issues_with_boundaries_and_owners_comments,
+            local_liabilities=intelligence_data.local_liabilities,
+            local_liabilities_comments=intelligence_data.local_liabilities_comments,
+            bank_loans_or_pending_loans=intelligence_data.bank_loans_or_pending_loans,
+            loan_amount=intelligence_data.loan_amount,
+            bank_loans_or_pending_loans_comments=intelligence_data.bank_loans_or_pending_loans_comments,
+            owner_mindset=intelligence_data.owner_mindset,
+            owner_mindset_comments=intelligence_data.owner_mindset_comments,
+            source_person=intelligence_data.source_person,
+            source_person_name=intelligence_data.source_person_name,
+            source_person_contact_details=intelligence_data.source_person_contact_details,
+            source_person_comments=intelligence_data.source_person_comments,
+            paper_agreement=intelligence_data.paper_agreement,
+            agreement_type=intelligence_data.agreement_type,
+            last_price_of_land=intelligence_data.last_price_of_land,
+            paper_agreement_comments=intelligence_data.paper_agreement_comments,
+            previous_transactions_on_land=intelligence_data.previous_transactions_on_land,
+            previous_transaction_amount=intelligence_data.previous_transaction_amount,
+            previous_transaction_comments=intelligence_data.previous_transaction_comments
+        )
+        db.add(db_intelligence)
+        db.commit()
+        db.refresh(db_intelligence)
+        return db_intelligence
+    except Exception as e:
+        db.rollback()
+        raise Exception(f"Error in creating Local Intelligence: {e}")

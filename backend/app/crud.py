@@ -1,15 +1,16 @@
-# app/crud.py
 from sqlalchemy.orm import Session
-from . import models, schemas  # Import models and schemas
+from . import models, schemas
 from .schemas import LegalityCreate, FamilyTreeCreate
 from fastapi import HTTPException
 import logging
+from .models import *
+from .schemas import *
 
-# Set up logging configuration
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Function to create a Legality record
+
 def create_legality(db: Session, legality: schemas.LegalityCreate):
     db_legality = models.Legality(
         land_documents_file=legality.land_documents_file,
@@ -44,7 +45,21 @@ def create_legality(db: Session, legality: schemas.LegalityCreate):
     db.refresh(db_legality)
     return db_legality
 
-# Function to create a FamilyTree record
+
+def update_legality(db: Session, legality_id: int, legality_data: schemas.LegalityUpdate):
+    db_legality = db.query(models.Legality).filter(
+        models.Legality.id == legality_id).first()
+    if not db_legality:
+        return None
+
+    for field, value in legality_data.dict(exclude_unset=True).items():
+        setattr(db_legality, field, value)
+
+    db.commit()
+    db.refresh(db_legality)
+    return db_legality
+
+
 def create_family_tree(db: Session, family_tree: schemas.FamilyTreeCreate):
     try:
         db_family_tree = models.FamilyTree(**family_tree.dict())
@@ -57,7 +72,6 @@ def create_family_tree(db: Session, family_tree: schemas.FamilyTreeCreate):
         logger.error(f"Error creating FamilyTree record: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while creating the FamilyTree record")
 
-# Function to get all FamilyTree records
 def get_family_tree(db: Session, skip: int = 0, limit: int = 100):
     try:
         family_tree_records = db.query(models.FamilyTree).offset(skip).limit(limit).all()
@@ -66,6 +80,35 @@ def get_family_tree(db: Session, skip: int = 0, limit: int = 100):
     except Exception as e:
         logger.error(f"Error retrieving FamilyTree records: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while fetching FamilyTree records")
+
+
+def update_family_tree(db: Session, family_tree_id: int, family_tree: schemas.FamilyTreeCreate):
+    try:
+        db_family_tree = db.query(models.FamilyTree).filter(
+            models.FamilyTree.id == family_tree_id).first()
+        if db_family_tree is None:
+            raise HTTPException(
+                status_code=404, detail="FamilyTree record not found")
+
+        db_family_tree.father_name = family_tree.father_name
+        db_family_tree.father_age = family_tree.father_age
+        db_family_tree.mother_name = family_tree.mother_name
+        db_family_tree.mother_age = family_tree.mother_age
+        db_family_tree.owner_name = family_tree.owner_name
+        db_family_tree.owner_age = family_tree.owner_age
+        db_family_tree.religion = family_tree.religion
+        db_family_tree.num_wifes = family_tree.num_wifes
+        db_family_tree.num_kids = family_tree.num_kids
+        db_family_tree.num_siblings = family_tree.num_siblings
+
+        db.commit()
+        db.refresh(db_family_tree)
+
+        logger.info(f"FamilyTree updated successfully with ID: {db_family_tree.id}")
+        return db_family_tree
+    except Exception as e:
+        logger.error(f"Error updating FamilyTree record: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while updating the FamilyTree record")
 
 
 def create_land_boundaries(db: Session, land_boundaries: schemas.LandBoundariesCreate):
@@ -107,6 +150,17 @@ def create_land_boundaries(db: Session, land_boundaries: schemas.LandBoundariesC
     db.commit()
     db.refresh(db_land_boundaries)
     return db_land_boundaries
+
+
+def update_land_boundaries(db: Session, land_id: int, data: LandBoundariesUpdate):
+    land = db.query(LandBoundaries).filter(LandBoundaries.id == land_id).first()
+    if not land:
+        return None
+    for field, value in data.dict(exclude_unset=True).items():
+        setattr(land, field, value)
+    db.commit()
+    db.refresh(land)
+    return land
 
 
 def create_valuation(db: Session, valuation: schemas.ValuationCreate):
@@ -154,6 +208,17 @@ def create_valuation(db: Session, valuation: schemas.ValuationCreate):
     return db_valuation
 
 
+def update_valuation(db: Session, valuation_id: int, valuation_data: schemas.ValuationCreate):
+    valuation_record = db.query(models.Valuation).filter(models.Valuation.id == valuation_id).first()
+    if not valuation_record:
+        return None
+    for key, value in valuation_data.dict(exclude_unset=True).items():
+        setattr(valuation_record, key, value)
+    db.commit()
+    db.refresh(valuation_record)
+    return valuation_record
+
+
 def create_agriculture_certification(db: Session, certification_data: schemas.AgricultureCertificationCreate):
     db_certification = models.AgricultureCertification(
         local_agriculture_officer_report_file=certification_data.local_agriculture_officer_report_file,
@@ -187,6 +252,17 @@ def create_agriculture_certification(db: Session, certification_data: schemas.Ag
     return db_certification
 
 
+def update_agriculture_certification(db: Session, agriculture_certification_id: int, agriculture_certification_data: schemas.AgricultureCertificationCreate):
+    agriculture_certification_record = db.query(models.AgricultureCertification).filter(models.AgricultureCertification.id == agriculture_certification_id).first()
+    if not agriculture_certification_record:
+        return None
+    for key, value in agriculture_certification_data.dict(exclude_unset=True).items():
+        setattr(agriculture_certification_record, key, value)
+    db.commit()
+    db.refresh(agriculture_certification_record)
+    return agriculture_certification_record
+
+
 def create_local_intelligence(db: Session, intelligence_data: schemas.LocalIntelligenceCreate):
     try:
         db_intelligence = models.LocalIntelligence(
@@ -218,3 +294,18 @@ def create_local_intelligence(db: Session, intelligence_data: schemas.LocalIntel
     except Exception as e:
         db.rollback()
         raise Exception(f"Error in creating Local Intelligence: {e}")
+
+
+def update_local_intelligence(db: Session, local_intelligence_id: int, local_intelligence_data: schemas.LocalIntelligenceUpdate):
+    local_intelligence_record = db.query(models.LocalIntelligence).filter(
+        models.LocalIntelligence.id == local_intelligence_id).first()
+
+    if not local_intelligence_record:
+        return None
+
+    for key, value in local_intelligence_data.dict(exclude_unset=True).items():
+        setattr(local_intelligence_record, key, value)
+
+    db.commit()
+    db.refresh(local_intelligence_record)
+    return local_intelligence_record

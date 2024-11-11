@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-class LegalityCreate(BaseModel):
+class LegalityBase(BaseModel):
     land_documents_file: Optional[List[str]] = None
     land_documents_comment: Optional[str] = None
     pattadhar_passbook_file: Optional[List[str]] = None
@@ -31,6 +31,10 @@ class LegalityCreate(BaseModel):
 
     class Config:
         from_attributes = True
+class LegalityCreate(LegalityBase):
+    pass
+class LegalityUpdate(LegalityBase):
+    pass
 
 class LegalityResponse(BaseModel):
     id: int
@@ -60,14 +64,10 @@ class LegalityResponse(BaseModel):
     land_coordinates_comment_file: Optional[str] = None
     owner_kyc_video_file: Optional[List[str]] = None
     owner_kyc_video_comment: Optional[str] = None
-
     class Config:
-       from_attributes = True
-
-
+        from_attributes = True
 class LegalityListResponse(BaseModel):
     legality: List[LegalityResponse]
-
     class Config:
         from_attributes = True
         
@@ -85,92 +85,17 @@ class FamilyTreeCreate(BaseModel):
 
 class FamilyTreeResponse(FamilyTreeCreate):
     id: int
-
     class Config:
         from_attributes = True
 
 class FamilyTreeListResponse(BaseModel):
     family_tree: List[FamilyTreeResponse]
 
+class ApiResponse(BaseModel):
+    status_code: int
+    message: str
+    data: dict
 
-class LandBoundariesCreate(BaseModel):
-    land_images_file: Optional[List[str]] = None
-    land_images_comments: Optional[str] = None
-    landscape_view_of_farmland_file: Optional[List[str]] = None
-    slope_side: Optional[str] = None
-    slope_side_comments: Optional[str] = None
-    shape_of_land: Optional[str] = None
-    shape_of_land_comment: Optional[str] = None
-    water_and_electricity_facility: Optional[str] = None
-    water_facility: Optional[str] = None
-    electricity_facility: Optional[str] = None
-    water_and_electricity_facility_comments: Optional[str] = None
-    masterplan_file: Optional[List[str]] = None
-    masterplan_comments: Optional[str] = None
-    east_boundaries_select: Optional[str] = None
-    east_owner_name: Optional[str] = None
-    east_age: Optional[int] = None
-    east_boundaries_comments: Optional[str] = None
-    west_boundaries_select: Optional[str] = None
-    type_of_road: Optional[str] = None
-    width_of_road: Optional[float] = None
-    west_boundaries_comments: Optional[str] = None
-    north_boundaries_select: Optional[str] = None
-    tree_count: Optional[int] = None
-    north_boundaries_comments: Optional[str] = None
-    south_boundaries_select: Optional[str] = None
-    south_boundaries_comments: Optional[str] = None
-    survey_report: Optional[str] = None
-    private_survey_file: Optional[List[str]] = None
-    private_survey_number: Optional[str] = None
-    government_survey_file: Optional[List[str]] = None
-    survey_report_comments: Optional[str] = None
-
-    class Config:
-        from_attributes = True
-
-class LandBoundariesResponse(BaseModel):
-    id: int
-    land_images_file: Optional[List[str]] = None
-    land_images_comments: Optional[str] = None
-    landscape_view_of_farmland_file: Optional[List[str]] = None
-    slope_side: Optional[str] = None
-    slope_side_comments: Optional[str] = None
-    shape_of_land: Optional[str] = None
-    shape_of_land_comment: Optional[str] = None
-    water_and_electricity_facility: Optional[str] = None
-    water_facility: Optional[str] = None
-    electricity_facility: Optional[str] = None
-    water_and_electricity_facility_comments: Optional[str] = None
-    masterplan_file: Optional[List[str]] = None
-    masterplan_comments: Optional[str] = None
-    east_boundaries_select: Optional[str] = None
-    east_owner_name: Optional[str] = None
-    east_age: Optional[int] = None
-    east_boundaries_comments: Optional[str] = None
-    west_boundaries_select: Optional[str] = None
-    type_of_road: Optional[str] = None
-    width_of_road: Optional[float] = None
-    west_boundaries_comments: Optional[str] = None
-    north_boundaries_select: Optional[str] = None
-    tree_count: Optional[int] = None
-    north_boundaries_comments: Optional[str] = None
-    south_boundaries_select: Optional[str] = None
-    south_boundaries_comments: Optional[str] = None
-    survey_report: Optional[str] = None
-    private_survey_file: Optional[List[str]] = None
-    private_survey_number: Optional[str] = None
-    government_survey_file: Optional[List[str]] = None
-    survey_report_comments: Optional[str] = None
-
-    class Config:
-        from_attributes = True
-
-class LandBoundariesListResponse(BaseModel):
-    land_boundaries: List[LandBoundariesResponse]
-
-    class Config:
-        from_attributes = True
 class LandBoundariesCreate(BaseModel):
     land_images_file: Optional[List[str]] = None
     land_images_comments: Optional[str] = None
@@ -207,51 +132,19 @@ class LandBoundariesCreate(BaseModel):
 
     class Config:
         from_attributes = True
-
-
-class LandBoundariesResponse(BaseModel):
+class LandBoundariesResponse(LandBoundariesCreate):
     id: int
-    land_images_file: Optional[List[str]] = None
-    land_images_comments: Optional[str] = None
-    landscape_view_of_farmland_file: Optional[List[str]] = None
-    slope_side: Optional[str] = None
-    slope_side_comments: Optional[str] = None
-    shape_of_land: Optional[str] = None
-    shape_of_land_comment: Optional[str] = None
-    water_and_electricity_facility: Optional[str] = None
-    water_facility: Optional[str] = None
-    electricity_facility: Optional[str] = None
-    water_and_electricity_facility_comments: Optional[str] = None
-    masterplan_file: Optional[List[str]] = None
-    masterplan_comments: Optional[str] = None
-    east_boundaries_select: Optional[str] = None
-    east_owner_name: Optional[str] = None
-    east_age: Optional[int] = None
-    east_boundaries_comments: Optional[str] = None
-    west_boundaries_select: Optional[str] = None
-    type_of_road: Optional[str] = None
-    width_of_road: Optional[float] = None
-    west_boundaries_comments: Optional[str] = None
-    north_boundaries_select: Optional[str] = None
-    tree_count: Optional[int] = None
-    north_boundaries_comments: Optional[str] = None
-    south_boundaries_select: Optional[str] = None
-    south_boundaries_comments: Optional[str] = None
-    survey_report: Optional[str] = None
-    private_survey_file: Optional[List[str]] = None
-    private_survey_number: Optional[str] = None
-    government_survey_file: Optional[List[str]] = None
-    government_survey_number: Optional[str] = None
-    survey_report_comments: Optional[str] = None
-
     class Config:
         from_attributes = True
 
 class LandBoundariesListResponse(BaseModel):
     land_boundaries: List[LandBoundariesResponse]
-
     class Config:
         from_attributes = True
+
+class LandBoundariesUpdate(LandBoundariesCreate):
+    pass
+
 class ValuationCreate(BaseModel):
     village_map_or_naksha_file: Optional[List[str]] = None
     village_map_or_naksha_comments: Optional[str] = None
@@ -293,8 +186,6 @@ class ValuationCreate(BaseModel):
     class Config:
         from_attributes = True
 
-
-# Define the response models
 class ValuationResponse(BaseModel):
     id: int
     village_map_or_naksha_file: Optional[List[str]] = None
@@ -336,14 +227,13 @@ class ValuationResponse(BaseModel):
 
     class Config:
         from_attributes = True
-
-
 class ValuationListResponse(BaseModel):
     valuations: List[ValuationResponse]
 
     class Config:
         from_attributes = True
-
+class ValuationUpdate(ValuationCreate):
+    pass
 class AgricultureCertificationCreate(BaseModel):
     local_agriculture_officer_report_file: Optional[List[str]] = None
     local_agriculture_officer_report_comments: Optional[str] = None
@@ -369,6 +259,7 @@ class AgricultureCertificationCreate(BaseModel):
     suggested_crop_by_green_land: Optional[str] = None
     best_returns: Optional[int] = None
     suggested_crop_comments: Optional[str] = None
+
     class Config:
         from_attributes = True
 
@@ -398,14 +289,17 @@ class AgricultureCertificationResponse(BaseModel):
     suggested_crop_by_green_land: Optional[str] = None
     best_returns: Optional[int] = None
     suggested_crop_comments: Optional[str] = None
+
     class Config:
         from_attributes = True
 
 class AgricultureCertificationListResponse(BaseModel):
     agriculture_certifications: List[AgricultureCertificationResponse]
 
+class AgricultureCertificationUpdate(AgricultureCertificationCreate):
+    pass
 
-class LocalIntelligenceCreate(BaseModel):
+class LocalIntelligenceBase(BaseModel):
     issues_with_boundaries_and_owners: Optional[str] = None
     issues_with_boundaries_and_owners_comments: Optional[str] = None
     local_liabilities: Optional[str] = None
@@ -427,15 +321,20 @@ class LocalIntelligenceCreate(BaseModel):
     previous_transaction_amount: Optional[int] = None
     previous_transaction_comments: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+class LocalIntelligenceCreate(LocalIntelligenceBase):
+    pass
 
-
-class LocalIntelligenceResponse(LocalIntelligenceCreate):
+class LocalIntelligenceResponse(LocalIntelligenceBase):
     id: int
-
     class Config:
-        from_attributes = True
+       from_attributes = True
+
+class LocalIntelligenceUpdate(LocalIntelligenceBase):
+    pass
+
 
 class LocalIntelligenceListResponse(BaseModel):
     local_intelligences: List[LocalIntelligenceResponse]
+
+    class Config:
+        from_attributes = True

@@ -31,8 +31,6 @@ class Legality(Base):
     land_coordinates_comment_file = Column(Text)
     owner_kyc_video_file = Column(JSON)
     owner_kyc_video_comment = Column(Text)
-
-
 class FamilyTree(Base):
     __tablename__ = "family_tree"
 
@@ -48,7 +46,6 @@ class FamilyTree(Base):
     num_kids = Column(Integer)
     num_siblings = Column(Integer)
 
-
 class LandBoundaries(Base):
     __tablename__ = "land_boundaries"
 
@@ -56,37 +53,35 @@ class LandBoundaries(Base):
     land_images_file = Column(JSON)
     land_images_comments = Column(Text)
     landscape_view_of_farmland_file = Column(JSON)
-    slope_side = Column(String)  # e.g., "North", "South", etc.
+    slope_side = Column(String)
     slope_side_comments = Column(Text)
-    shape_of_land = Column(String)  # e.g., "Rectangular", "Square", etc.
-    shape_of_land_comment = Column(Text)   # e.g., "Water only", "Electricity only", etc.
+    shape_of_land = Column(String)
+    shape_of_land_comment = Column(Text)
     water_and_electricity_facility = Column(String)
-    water_facility = Column(String)  # e.g., "Bore", "Municipal"
-    electricity_facility = Column(String)  # e.g., "3 Phase", "2 Phase"
+    water_facility = Column(String)
+    electricity_facility = Column(String)
     water_and_electricity_facility_comments = Column(Text)
     masterplan_file = Column(JSON)
     masterplan_comments = Column(Text)
-    east_boundaries_select = Column(String)  # e.g., "Road", "House", etc.
+    east_boundaries_select = Column(String)
     east_owner_name = Column(String)
     east_age = Column(Integer)
     east_boundaries_comments = Column(Text)
     west_boundaries_select = Column(String)
     type_of_road = Column(String)
-    width_of_road = Column(String)  # assuming width is a float value
+    width_of_road = Column(String)
     west_boundaries_comments = Column(Text)
     north_boundaries_select = Column(String)
-    tree_count = Column(Integer)  # number of trees
+    tree_count = Column(Integer)
     north_boundaries_comments = Column(Text)
     south_boundaries_select = Column(String)
     south_boundaries_comments = Column(Text) 
-    survey_report = Column(String) # e.g., "Private Survey", "Government Survey"
+    survey_report = Column(String)
     private_survey_file = Column(JSON)
     private_survey_number = Column(String)
     government_survey_file = Column(JSON)
     government_survey_number = Column(String)
     survey_report_comments = Column(Text)
-
-
 class Valuation(Base):
     __tablename__ = "valuation"
 
@@ -105,7 +100,7 @@ class Valuation(Base):
     water_facility = Column(Boolean)
     primary_source_of_land = Column(String(255))
     water_facility_comments = Column(Text)
-    recent_transaction_in_surrounding = Column(String(50))  # 'Yes', 'No', 'NA'
+    recent_transaction_in_surrounding = Column(String(50))
     valuation_per_acre = Column(Float)
     local_market_acre_price = Column(Float)
     recent_transaction_comments = Column(Text)
@@ -119,7 +114,7 @@ class Valuation(Base):
     disadvantages_comments = Column(Text)
     future_plans_comments = Column(Text)
     upcoming_infrastructures = Column(Boolean)
-    infrastructures_list = Column(Text)  # For list of infrastructures
+    infrastructures_list = Column(Text)
     infrastructures_comments = Column(Text)
     railway_connectivity = Column(Boolean)
     railway_distance = Column(Float)
